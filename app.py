@@ -16,18 +16,17 @@ except KeyError:
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
 
 # --- matplotlib 日本語対応 ---
-# Wide レイアウトの場合も、グラフ内の日本語が正しく表示されるようにフォントを設定
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Noto Sans CJK JP", "IPAexGothic", "Arial Unicode MS"]
 
 # --- 献立生成関数 ---
-def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season):
+def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season, age_min, age_max):
     prompt = f"""
 以下の条件に基づき、{day}日分の献立（朝食、昼食、夕食）を作成してください。各日の献立は異なる内容で、栄養バランスを重視してください。
 
 【条件】（必ず守ること）
 1. 各日の献立には、朝食、昼食、夕食のメニューと、各メニューの栄養価（カロリー、たんぱく質、脂質、炭水化物）を明記する。
-2. 栄養バランス：男子は1日2800キロカロリー、女子は1日2400キロカロリーを目安とし、必要に応じて栄養素の補正案を提示する。
+2. 栄養バランス：年齢が{age_min}歳から{age_max}歳の寮生を想定し、適正なカロリーとして男子は1日2800キロカロリー、女子は1日2400キロカロリーを目安とする。必要に応じて栄養素の補正案を提示する。
 3. 同じ献立が繰り返されないようにする。
 4. 寮生が食べやすく、喜ぶ内容にする。
 5. 季節の旬の食材と、地域（{region}）の伝統料理を優先する。
@@ -45,6 +44,7 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 - 作成日数：{day}
 - 地域：{region}
 - 季節：{season}
+- 寮生の年齢：{age_min}歳〜{age_max}歳
 
 【出力内容】
 1. {day}日分の献立（朝食、昼食、夕食）
@@ -68,6 +68,8 @@ preferences = st.sidebar.text_input("リクエスト", value="和食中心、週
 day = st.sidebar.number_input("作成日数", min_value=1, max_value=30, value=7, step=1)
 region = st.sidebar.selectbox("地域", ["東京", "大阪", "福岡", "その他"])
 season = st.sidebar.selectbox("季節", ["春", "夏", "秋", "冬"])
+age_min = st.sidebar.number_input("寮生の最低年齢", min_value=10, max_value=100, value=18, step=1)
+age_max = st.sidebar.number_input("寮生の最高年齢", min_value=10, max_value=100, value=25, step=1)
 
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
@@ -78,7 +80,7 @@ st.markdown("""
 
 if st.button("献立を生成する"):
     with st.spinner("献立を生成中..."):
-        meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season)
+        meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season, age_min, age_max)
     st.subheader("生成された献立")
     st.markdown("### 献立詳細")
     st.markdown(f"```\n{meal_plan}\n```")
