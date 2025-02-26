@@ -3,7 +3,6 @@ from google import genai
 import matplotlib.pyplot as plt
 import pandas as pd
 import pyperclip  # クリップボードへのコピー用
-from wordcloud import WordCloud
 
 # ページレイアウトを Wide に設定
 st.set_page_config(page_title="MealPlan Maestro", layout="wide")
@@ -65,7 +64,7 @@ def generate_meal_plan(num_users, allergy_info, budget_per_day, cooking_equipmen
 # --- 買い物リスト生成関数（仮実装） ---
 def generate_shopping_list(meal_plan_text):
     """
-    献立テキストから必要な食材リストを抽出する（ダミーデータ）。
+    献立テキストから必要な食材リストを抽出する（ここではダミーデータを返す）。
     """
     shopping_list = """
 【買い物リスト】
@@ -78,16 +77,6 @@ def generate_shopping_list(meal_plan_text):
 - だしの素: 1パック
     """
     return shopping_list
-
-# --- WordCloud 生成関数 ---
-def generate_wordcloud(text):
-    wordcloud = WordCloud(
-        font_path="NotoSansJP-Regular.ttf",  # フォントファイルのパスを正しく指定
-        background_color="white",
-        width=800,
-        height=400
-    ).generate(text)
-    return wordcloud
 
 # --- サイドバーによるコントロールパネル ---
 st.sidebar.title("コントロールパネル")
@@ -130,16 +119,6 @@ if st.button("献立を生成する"):
     shopping_list = generate_shopping_list(meal_plan)
     st.subheader("生成された買い物リスト")
     st.markdown(f"```\n{shopping_list}\n```")
-    
-    # WordCloud の生成例
-    st.markdown("### WordCloud の例")
-    words = meal_plan.split()  # 献立テキストから単語を抽出
-    wc_text = " ".join(words)
-    wordcloud = generate_wordcloud(wc_text)
-    fig_wc, ax_wc = plt.subplots(figsize=(10, 5))
-    ax_wc.imshow(wordcloud, interpolation="bilinear")
-    ax_wc.axis("off")
-    st.pyplot(fig_wc)
 
 # --- 共有機能 ---
 st.markdown("### 共有")
