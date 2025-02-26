@@ -3,5 +3,4 @@ google-genai
 matplotlib
 pandas
 pyperclip
-WordCloud
-pyplot
+wordcloud
