@@ -4,13 +4,20 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # --- 初期設定 ---
+# st.secrets の [gemini] セクションから API_KEY を取得する
 try:
     api_key = st.secrets["gemini"]["API_KEY"]
 except KeyError:
     st.error("Error: secrets ファイルの [gemini] セクションに 'API_KEY' が設定されていません。")
     st.stop()
 
+# クライアントの初期化
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
+
+# --- matplotlib 日本語対応 ---
+# 日本語フォント（Noto Sans CJK JP等）を設定して文字化けを防ぐ
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["font.sans-serif"] = ["Noto Sans CJK JP", "IPAexGothic", "Arial Unicode MS"]
 
 # --- 献立生成関数 ---
 def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season):
@@ -73,19 +80,12 @@ if st.button("献立を生成する"):
         meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season)
     st.subheader("生成された献立")
     st.markdown("### 献立詳細")
+    # 生成された献立をコードブロック形式で表示
     st.markdown(f"```\n{meal_plan}\n```")
     
-    # 関連リンクの表示
-    st.markdown("### 関連する料理の献立")
-    st.markdown("""
-- [和食の献立例](https://example.com/washoku)
-- [洋食の献立例](https://example.com/yoshoku)
-- [中華の献立例](https://example.com/chuka)
-    """)
-    
-    # 栄養価のビジュアル表示例（仮のデータを使用）
+    # 栄養価のビジュアル表示（仮のデータ例）
     st.markdown("### 栄養価のビジュアル表示")
-    # 仮のデータ例。実際はAPIからの出力データを解析して数値化する必要があります。
+    # 仮のデータ例。実際はAPIの出力データを解析する必要があります。
     data = {
         '日': [f'{i+1}日目' for i in range(day)],
         'カロリー': [600 + i*10 for i in range(day)],
