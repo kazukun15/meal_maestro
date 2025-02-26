@@ -3,19 +3,20 @@ from google import genai
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# ページレイアウトを Wide に設定
+st.set_page_config(page_title="MealPlan Maestro", layout="wide")
+
 # --- 初期設定 ---
-# st.secrets の [gemini] セクションから API_KEY を取得する
 try:
     api_key = st.secrets["gemini"]["API_KEY"]
 except KeyError:
     st.error("Error: secrets ファイルの [gemini] セクションに 'API_KEY' が設定されていません。")
     st.stop()
 
-# クライアントの初期化
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
 
 # --- matplotlib 日本語対応 ---
-# 日本語フォント（Noto Sans CJK JP等）を設定して文字化けを防ぐ
+# Wide レイアウトの場合も、グラフ内の日本語が正しく表示されるようにフォントを設定
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Noto Sans CJK JP", "IPAexGothic", "Arial Unicode MS"]
 
@@ -80,12 +81,10 @@ if st.button("献立を生成する"):
         meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season)
     st.subheader("生成された献立")
     st.markdown("### 献立詳細")
-    # 生成された献立をコードブロック形式で表示
     st.markdown(f"```\n{meal_plan}\n```")
     
-    # 栄養価のビジュアル表示（仮のデータ例）
+    # 仮の栄養価データによるビジュアル表示
     st.markdown("### 栄養価のビジュアル表示")
-    # 仮のデータ例。実際はAPIの出力データを解析する必要があります。
     data = {
         '日': [f'{i+1}日目' for i in range(day)],
         'カロリー': [600 + i*10 for i in range(day)],
@@ -94,7 +93,7 @@ if st.button("献立を生成する"):
         '炭水化物': [70 + i*5 for i in range(day)]
     }
     df = pd.DataFrame(data)
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(10, 5))
     df.set_index('日')[['カロリー', 'たんぱく質', '脂質', '炭水化物']].plot(kind='bar', ax=ax)
     ax.set_title('日別栄養価')
     st.pyplot(fig)
