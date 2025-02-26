@@ -3,4 +3,4 @@ google-genai
 matplotlib
 pandas
 pyperclip
-textwrap
+wordcloud
