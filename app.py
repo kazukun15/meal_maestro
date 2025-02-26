@@ -118,14 +118,3 @@ if st.button("献立を生成する"):
     shopping_list = generate_shopping_list(meal_plan)
     st.subheader("生成された買い物リスト")
     st.markdown(f"```\n{shopping_list}\n```")
-
-# --- 共有機能 ---
-st.markdown("### 共有")
-share_url = "https://your-app-url.com"  # 実際のアプリURLに変更してください
-st.markdown(f"アプリのURL: [ {share_url} ]({share_url})")
-if st.button("URLをコピー"):
-    try:
-        pyperclip.copy(share_url)
-        st.success("URLをクリップボードにコピーしました。")
-    except Exception as e:
-        st.error("クリップボードへのコピーに失敗しました。手動でコピーしてください。")
