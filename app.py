@@ -2,6 +2,7 @@ import streamlit as st
 from google import genai
 import matplotlib.pyplot as plt
 import pandas as pd
+import pyperclip  # クリップボードへのコピー用
 
 # ページレイアウトを Wide に設定
 st.set_page_config(page_title="MealPlan Maestro", layout="wide")
@@ -16,6 +17,7 @@ except KeyError:
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
 
 # --- matplotlib 日本語対応 ---
+# 日本語が文字化けしないように、日本語対応のフォントを設定
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Noto Sans CJK JP", "IPAexGothic", "Arial Unicode MS"]
 
@@ -26,7 +28,7 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 
 【条件】（必ず守ること）
 1. 各日の献立には、朝食、昼食、夕食のメニューと、各メニューの栄養価（カロリー、たんぱく質、脂質、炭水化物）を明記する。
-2. 栄養バランス：年齢が{age_min}歳から{age_max}歳の寮生を想定し、適正なカロリーとして男子は1日2800キロカロリー、女子は1日2400キロカロリーを目安とする。必要に応じて栄養素の補正案を提示する。
+2. 栄養バランス：寮生の年齢を{age_min}歳から{age_max}歳と想定し、男子は1日2800キロカロリー、女子は1日2400キロカロリーを目安とする。必要に応じて栄養素の補正案を提示する。
 3. 同じ献立が繰り返されないようにする。
 4. 寮生が食べやすく、喜ぶ内容にする。
 5. 季節の旬の食材と、地域（{region}）の伝統料理を優先する。
@@ -57,6 +59,23 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
     )
     return response.text
 
+# --- 買い物リスト生成関数（仮実装） ---
+def generate_shopping_list(meal_plan_text):
+    """
+    献立テキストから必要な食材リストを抽出する（ここではダミーの買い物リストを返す）。
+    """
+    shopping_list = """
+【買い物リスト】
+- 白米: 5kg
+- 鶏肉: 3kg
+- 豚肉: 2kg
+- 鮭: 1kg
+- 野菜各種: 適量
+- 豆腐: 2丁
+- だしの素: 1パック
+    """
+    return shopping_list
+
 # --- サイドバーによるコントロールパネル ---
 st.sidebar.title("コントロールパネル")
 st.sidebar.markdown("以下の項目を入力して献立を生成します。")
@@ -74,7 +93,8 @@ age_max = st.sidebar.number_input("寮生の最高年齢", min_value=10, max_val
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、栄養バランスに優れた献立を自動生成します。  
+このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
+**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
 """)
 
 if st.button("献立を生成する"):
@@ -84,7 +104,12 @@ if st.button("献立を生成する"):
     st.markdown("### 献立詳細")
     st.markdown(f"```\n{meal_plan}\n```")
     
-    # 仮の栄養価データによるビジュアル表示
+    # 買い物リストの生成
+    shopping_list = generate_shopping_list(meal_plan)
+    st.subheader("生成された買い物リスト")
+    st.markdown(f"```\n{shopping_list}\n```")
+    
+    # 栄養価のビジュアル表示（仮のデータ例）
     st.markdown("### 栄養価のビジュアル表示")
     data = {
         '日': [f'{i+1}日目' for i in range(day)],
@@ -98,3 +123,14 @@ if st.button("献立を生成する"):
     df.set_index('日')[['カロリー', 'たんぱく質', '脂質', '炭水化物']].plot(kind='bar', ax=ax)
     ax.set_title('日別栄養価')
     st.pyplot(fig)
+
+# --- 共有機能 ---
+st.markdown("### 共有")
+share_url = "https://your-app-url.com"  # 実際のアプリURLに変更してください
+st.markdown(f"アプリのURL: [ {share_url} ]({share_url})")
+if st.button("URLをコピー"):
+    try:
+        pyperclip.copy(share_url)
+        st.success("URLをクリップボードにコピーしました。")
+    except Exception as e:
+        st.error("クリップボードへのコピーに失敗しました。手動でコピーしてください。")
