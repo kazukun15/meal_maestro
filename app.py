@@ -7,14 +7,13 @@ try:
     api_key = st.secrets["gemini"]["API_KEY"]
 except KeyError:
     st.error("Error: secrets ファイルの [gemini] セクションに 'API_KEY' が設定されていません。")
-    st.stop()  # エラー時に処理を停止する
+    st.stop()
 
 # クライアントの初期化
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
 
 # --- 献立生成関数 ---
 def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day):
-    # 献立生成のためのプロンプトを作成
     prompt = f"""
 以下の条件に基づき、{day}日分の献立（朝食、昼食、夕食）を作成してください。各日の献立は異なる内容で、栄養バランスを重視してください。
 
@@ -42,24 +41,29 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 2. 各献立の栄養価（カロリー、たんぱく質、脂質、炭水化物）
 3. 必要な食材リスト（食材名と分量）
     """
-    # Gemini 2.0 Flash API を呼び出して献立生成
     response = client.models.generate_content(
-        model='gemini-2.0-flash',  # 必要に応じてモデル名を調整してください
+        model='gemini-2.0-flash',
         contents=prompt
     )
     return response.text
 
-# --- Streamlit UI ---
-st.title("献立作成 AI アプリ")
-st.write("Google Gemini 2.0 Flash を使用して、献立を生成します。")
+# --- サイドバーによるコントロールパネル ---
+st.sidebar.title("コントロールパネル")
+st.sidebar.markdown("以下の項目を入力して献立を生成します。")
 
-# ユーザー入力
-num_residents = st.number_input("寮生人数", min_value=1, value=15, step=1)
-allergy_info = st.text_area("アレルギー情報", value="大豆・牛乳アレルギー対応")
-budget_per_day = st.number_input("1日の予算 (円)", min_value=100, value=900, step=50)
-cooking_equipment = st.text_input("調理設備", value="ガスコンロ, 電子レンジ, 炊飯器")
-preferences = st.text_input("リクエスト", value="和食中心、週に1回洋食も入れたい")
-day = st.number_input("作成日数", min_value=1, max_value=30, value=7, step=1)
+num_residents = st.sidebar.number_input("寮生人数", min_value=1, value=15, step=1)
+allergy_info = st.sidebar.text_area("アレルギー情報", value="大豆・牛乳アレルギー対応")
+budget_per_day = st.sidebar.number_input("1日の予算 (円)", min_value=100, value=900, step=50)
+cooking_equipment = st.sidebar.text_input("調理設備", value="ガスコンロ, 電子レンジ, 炊飯器")
+preferences = st.sidebar.text_input("リクエスト", value="和食中心、週に1回洋食も入れたい")
+day = st.sidebar.number_input("作成日数", min_value=1, max_value=30, value=7, step=1)
+
+# --- メイン画面 ---
+st.title("MealPlan Maestro")
+st.markdown("""
+このアプリは、Google Gemini 2.0 Flash を活用して、栄養バランスに優れた献立を自動生成します。  
+**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
+""")
 
 if st.button("献立を生成する"):
     with st.spinner("献立を生成中..."):
