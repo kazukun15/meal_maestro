@@ -60,8 +60,7 @@ day = st.sidebar.number_input("作成日数", min_value=1, max_value=30, value=7
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
-**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
+
 """)
 
 if st.button("献立を生成する"):
