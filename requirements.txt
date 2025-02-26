@@ -4,3 +4,4 @@ matplotlib
 pandas
 pyperclip
 WordCloud
+pyplot
