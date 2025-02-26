@@ -77,7 +77,7 @@ def generate_shopping_list(meal_plan_text):
     return shopping_list
 
 # --- サイドバーによるコントロールパネル ---
-st.sidebar.title("コントロールパネル")
+st.sidebar.title("献立作成の条件")
 st.sidebar.markdown("以下の項目を入力して献立を生成します。")
 num_residents = st.sidebar.number_input("寮生人数", min_value=1, value=15, step=1)
 allergy_info = st.sidebar.text_area("アレルギー情報", value="大豆・牛乳アレルギー対応")
@@ -93,8 +93,8 @@ age_max = st.sidebar.number_input("寮生の最高年齢", min_value=10, max_val
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
-**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
+このアプリは、栄養バランスに優れた献立を自動生成します。  
+
 """)
 
 if st.button("献立を生成する"):
@@ -126,7 +126,7 @@ if st.button("献立を生成する"):
 
 # --- 共有機能 ---
 st.markdown("### 共有")
-share_url = "https://your-app-url.com"  # 実際のアプリURLに変更してください
+share_url = "https://www.google.co.jp/mail/help/intl/ja/about.html?vm=r"  # 実際のアプリURLに変更してください
 st.markdown(f"アプリのURL: [ {share_url} ]({share_url})")
 if st.button("URLをコピー"):
     try:
