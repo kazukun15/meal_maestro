@@ -42,7 +42,7 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 3. 必要な食材リスト（食材名と分量）
     """
     response = client.models.generate_content(
-        model='gemini-2.0-flash',
+        model='gemini-2.0-flash',  # 必要に応じてモデル名を調整してください
         contents=prompt
     )
     return response.text
@@ -50,7 +50,6 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 # --- サイドバーによるコントロールパネル ---
 st.sidebar.title("コントロールパネル")
 st.sidebar.markdown("以下の項目を入力して献立を生成します。")
-
 num_residents = st.sidebar.number_input("寮生人数", min_value=1, value=15, step=1)
 allergy_info = st.sidebar.text_area("アレルギー情報", value="大豆・牛乳アレルギー対応")
 budget_per_day = st.sidebar.number_input("1日の予算 (円)", min_value=100, value=900, step=50)
@@ -61,7 +60,7 @@ day = st.sidebar.number_input("作成日数", min_value=1, max_value=30, value=7
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、Google Gemini 2.0 Flash を活用して、栄養バランスに優れた献立を自動生成します。  
+このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
 **ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
 """)
 
@@ -69,4 +68,6 @@ if st.button("献立を生成する"):
     with st.spinner("献立を生成中..."):
         meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day)
     st.subheader("生成された献立")
-    st.text_area("献立詳細", value=meal_plan, height=400)
+    st.markdown("### 献立詳細")
+    # コードブロック形式で整形して表示
+    st.markdown(f"```\n{meal_plan}\n```")
