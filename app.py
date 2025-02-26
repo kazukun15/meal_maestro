@@ -3,7 +3,6 @@ from google import genai
 import matplotlib.pyplot as plt
 import pandas as pd
 import pyperclip  # クリップボードへのコピー用
-import textwrap  # 文字列を自動改行するためのモジュール
 
 # ページレイアウトを Wide に設定
 st.set_page_config(page_title="MealPlan Maestro", layout="wide")
@@ -106,12 +105,7 @@ if st.button("献立を生成する"):
         meal_plan = generate_meal_plan(num_users, allergy_info, budget_per_day, cooking_equipment, preferences, day, region, season, age_min, age_max, user_category)
     st.subheader("生成された献立")
     st.markdown("### 献立詳細")
-    # 文字数に合わせて自動改行（80文字ごと）
-    formatted_meal_plan = "\n".join(textwrap.wrap(meal_plan, width=80))
-    st.markdown(
-        f"<div style='background-color:#f0f8ff; padding:10px; border-radius:5px;'>{formatted_meal_plan}</div>", 
-        unsafe_allow_html=True
-    )
+    st.markdown(f"```\n{meal_plan}\n```")
     
     # 献立をコピーする機能
     if st.button("献立をコピーする"):
@@ -124,11 +118,7 @@ if st.button("献立を生成する"):
     # 買い物リストの生成
     shopping_list = generate_shopping_list(meal_plan)
     st.subheader("生成された買い物リスト")
-    formatted_shopping_list = "\n".join(textwrap.wrap(shopping_list, width=80))
-    st.markdown(
-        f"<div style='background-color:#f0fff0; padding:10px; border-radius:5px;'>{formatted_shopping_list}</div>", 
-        unsafe_allow_html=True
-    )
+    st.markdown(f"```\n{shopping_list}\n```")
 
 # --- 共有機能 ---
 st.markdown("### 共有")
