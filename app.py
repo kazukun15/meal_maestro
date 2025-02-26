@@ -48,7 +48,7 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
     return response.text
 
 # --- サイドバーによるコントロールパネル ---
-st.sidebar.title("コントロールパネル")
+st.sidebar.title("献立作成の条件")
 st.sidebar.markdown("以下の項目を入力して献立を生成します。")
 num_residents = st.sidebar.number_input("寮生人数", min_value=1, value=15, step=1)
 allergy_info = st.sidebar.text_area("アレルギー情報", value="大豆・牛乳アレルギー対応")
