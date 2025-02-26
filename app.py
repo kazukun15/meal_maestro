@@ -1,6 +1,5 @@
 import streamlit as st
 from google import genai
-import pyplot as plt
 import matplotlib.pyplot as plt
 import pandas as pd
 import pyperclip  # クリップボードへのコピー用
