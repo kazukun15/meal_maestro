@@ -2,8 +2,12 @@ import streamlit as st
 from google import genai
 
 # --- 初期設定 ---
-# API キーは、Streamlit の secrets に設定しておく（例: st.secrets["GEMINI_API_KEY"]）
-api_key = st.secrets["GEMINI_API_KEY"]
+# st.secrets に "GEMINI_API_KEY" が設定されているか確認し、なければエラーメッセージを表示
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+except KeyError:
+    st.error("Error: 'GEMINI_API_KEY' が secrets に設定されていません。Streamlit Cloud の secrets または環境変数を確認してください。")
+    st.stop()  # エラーが出た場合はここで処理を停止
 
 # クライアントの初期化
 client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
