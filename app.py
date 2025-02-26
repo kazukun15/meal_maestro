@@ -96,8 +96,7 @@ user_category = st.sidebar.selectbox("対象利用者層", ["学生", "一般家
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
-**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
+このアプリは、栄養バランスに優れた献立を自動生成します。  
 """)
 
 if st.button("献立を生成する"):
