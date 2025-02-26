@@ -74,8 +74,7 @@ age_max = st.sidebar.number_input("寮生の最高年齢", min_value=10, max_val
 # --- メイン画面 ---
 st.title("MealPlan Maestro")
 st.markdown("""
-このアプリは、Google Gemini 2.0 Flash を使用して、栄養バランスに優れた献立を自動生成します。  
-**ユーザー重視のデザイン（UD）** を意識し、シンプルで直感的な操作性を実現しています。
+このアプリは、栄養バランスに優れた献立を自動生成します。  
 """)
 
 if st.button("献立を生成する"):
