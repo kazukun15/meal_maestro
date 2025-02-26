@@ -42,7 +42,7 @@ def generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equi
 3. 必要な食材リスト（食材名と分量）
     """
     response = client.models.generate_content(
-        model='gemini-2.0-flash',  # 必要に応じてモデル名を調整してください
+        model='gemini-2.0-flash',
         contents=prompt
     )
     return response.text
@@ -68,6 +68,14 @@ if st.button("献立を生成する"):
     with st.spinner("献立を生成中..."):
         meal_plan = generate_meal_plan(num_residents, allergy_info, budget_per_day, cooking_equipment, preferences, day)
     st.subheader("生成された献立")
+    # 生成された献立をコードブロック形式で表示
     st.markdown("### 献立詳細")
-    # コードブロック形式で整形して表示
     st.markdown(f"```\n{meal_plan}\n```")
+    
+    # 関連する料理の献立リンクを追加
+    st.markdown("### 関連する料理の献立")
+    st.markdown("""
+- [和食の献立例](https://example.com/washoku)
+- [洋食の献立例](https://example.com/yoshoku)
+- [中華の献立例](https://example.com/chuka)
+    """)
